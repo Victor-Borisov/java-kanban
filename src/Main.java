@@ -7,14 +7,27 @@ public class Main {
         SubTask subTask;
         Epic epic;
         /*Create tasks*/
-        manager.createTask("Покупка билетов", "Купить билеты");
-        manager.createTask("Бронирование жилья", "Арендовать квартиру");
-        manager.createEpic("Релокация", "Переехать жить и работать в другую страну");
-        manager.createSubTask(3, "Подготовка документов", "Подготовить все документы");
-        manager.createSubTask(3,"Устройство на работу", "Устроиться на работу в новой локации");
-        manager.createSubTask(3, "Открытие счёта", "Открыть счёт в банке");
-        manager.createEpic("Получение гражданства", "Получить гражданство");
-        manager.createSubTask(7, "Получение гражданства", "Получить гражданство");
+        manager.createTask(new Task("Покупка билетов", "Купить билеты", Status.NEW));
+        manager.createTask(new Task("Бронирование жилья", "Арендовать квартиру", Status.NEW));
+
+        epic = new Epic("Релокация", "Переехать жить и работать в другую страну");
+        manager.createEpic(epic);
+        subTask = new SubTask("Подготовка документов", "Подготовить все документы", Status.NEW);
+        subTask.setEpicId(epic.getId());
+        manager.createSubTask(subTask);
+        subTask = new SubTask("Устройство на работу", "Устроиться на работу в новой локации", Status.NEW);
+        subTask.setEpicId(epic.getId());
+        manager.createSubTask(subTask);
+        subTask = new SubTask("Открытие счёта", "Открыть счёт в банке", Status.NEW);
+        subTask.setEpicId(epic.getId());
+        manager.createSubTask(subTask);
+
+        epic = new Epic("Получение гражданства", "Получить гражданство");
+        manager.createEpic(epic);
+        subTask = new SubTask("Получение гражданства", "Получить гражданство", Status.NEW);
+        subTask.setEpicId(epic.getId());
+        manager.createSubTask(subTask);
+
         /*Print tasks*/
         System.out.println(manager.getTask(1));
         System.out.println(manager.getTask(2));

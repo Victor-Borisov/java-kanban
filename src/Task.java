@@ -1,15 +1,14 @@
 import java.util.Objects;
 
 public class Task {
-    private final String name;
-    private final String description;
-    private final int id;
+    private String name;
+    private String description;
+    private int id;
     private Enum status;
 
-    public Task(String name, String description, int id, Enum status) {
+    public Task(String name, String description, Enum status) {
         this.name = name;
         this.description = description;
-        this.id = id;
         this.status = status;
     }
 
@@ -33,7 +32,9 @@ public class Task {
         return id;
     }
 
-
+    public void setId(int id) {
+        this.id = id;
+    }
     @Override
     public String toString() {
         return "Task{" +

@@ -1,19 +1,18 @@
 import java.util.Objects;
 
 public class SubTask extends Task {
-    private int linkToEpic;
+    private int epicId;
 
-    public SubTask(String name, String description, int id, Enum status, int linkToEpic) {
-        super(name, description, id, status);
-        this.linkToEpic = linkToEpic;
+    public SubTask(String name, String description, Enum status) {
+        super(name, description, status);
     }
 
-    public int getLinkToEpic() {
-        return linkToEpic;
+    public int getEpicId() {
+        return epicId;
     }
 
-    public void setLinkToEpic(int linkToEpic) {
-        this.linkToEpic = linkToEpic;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override
@@ -23,7 +22,7 @@ public class SubTask extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
                 ", status=" + getStatus() +
-                ", linkToEpic=" + linkToEpic +
+                ", epicId=" + epicId +
                 '}';
     }
 
@@ -33,11 +32,11 @@ public class SubTask extends Task {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         SubTask subTask = (SubTask) object;
-        return linkToEpic == subTask.linkToEpic;
+        return epicId == subTask.epicId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), linkToEpic);
+        return Objects.hash(super.hashCode(), epicId);
     }
 }

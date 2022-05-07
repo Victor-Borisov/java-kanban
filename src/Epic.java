@@ -4,8 +4,8 @@ import java.util.Objects;
 public class Epic extends Task {
     private HashMap<Integer, SubTask> subTasksEpic = new HashMap<>() ;
 
-    public Epic(String name, String description, int id, Enum status) {
-        super(name, description, id, status);
+    public Epic(String name, String description) {
+        super(name, description, Status.NEW);
     }
 
     public HashMap<Integer, SubTask> getSubTasksEpic() {
@@ -13,7 +13,11 @@ public class Epic extends Task {
     }
 
     public void setSubTasksEpic(HashMap<Integer, SubTask> subTasksEpic) {
-        this.subTasksEpic = subTasksEpic;
+        if (subTasksEpic == null) {
+            this.subTasksEpic.clear();
+        } else {
+            this.subTasksEpic = subTasksEpic;
+        }
     }
 
     @Override
