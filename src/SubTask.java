@@ -3,8 +3,9 @@ import java.util.Objects;
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String name, String description, Enum status) {
+    public SubTask(String name, String description, Enum status, int epicId) {
         super(name, description, status);
+        this.epicId = epicId;
     }
 
     public int getEpicId() {

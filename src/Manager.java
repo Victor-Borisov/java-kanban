@@ -72,7 +72,7 @@ public class Manager {
     public void deleteAllSubTasks() {
         subTasks.clear();
         for (Epic epic : epics.values()) {
-            epic.setSubTasksEpic(null);
+            epic.getSubTasksEpic().clear();
             updateStatusEpic(epic);
         }
     }
@@ -96,8 +96,7 @@ public class Manager {
 
     public void createSubTask(SubTask subTask) {
         subTask.setId(getId());
-        int epicId = subTask.getEpicId();
-        Epic epic = epics.get(epicId);
+        Epic epic = epics.get(subTask.getEpicId());
         if (epic != null) {
             subTasks.put(subTask.getId(), subTask);
             epic.getSubTasksEpic().put(subTask.getId(), subTask);
@@ -191,8 +190,6 @@ public class Manager {
                         return;
                     }
                 }
-
-                epics.put(epic.getId(), epic);
 
                 if (countDone == epic.getSubTasksEpic().size()) {
                     epic.setStatus(Status.DONE);
