@@ -2,7 +2,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        Manager manager = new Manager();
+        InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefault(Managers.getDefaultHistory());
         Task task;
         SubTask subTask;
         Epic epic;
@@ -26,9 +26,21 @@ public class Main {
 
         /*Print tasks*/
         System.out.println(manager.getTask(1));
+        for (Task taskInHistory : manager.getHistory()) {
+            System.out.println("Task in history: " + taskInHistory);
+        }
         System.out.println(manager.getTask(2));
+        for (Task taskInHistory : manager.getHistory()) {
+            System.out.println("Task in history: " + taskInHistory);
+        }
         System.out.println(manager.getEpic(3));
+        for (Task taskInHistory : manager.getHistory()) {
+            System.out.println("Task in history: " + taskInHistory);
+        }
         System.out.println(manager.getSubTask(4));
+        for (Task taskInHistory : manager.getHistory()) {
+            System.out.println("Task in history: " + taskInHistory);
+        }
         System.out.println(manager.getSubTask(5));
         System.out.println(manager.getSubTask(6));
         System.out.println(manager.getEpic(7));
