@@ -2,7 +2,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefault(Managers.getDefaultHistory());
+        TaskManager manager = Managers.getDefault(Managers.getDefaultHistory());
         Task task;
         SubTask subTask;
         Epic epic;

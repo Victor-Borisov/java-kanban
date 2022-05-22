@@ -7,8 +7,12 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final LinkedList<Task> taskQueue = new LinkedList<>();
     @Override
     public void add(Task task) {
-        if (taskQueue.size() == 10) { taskQueue.remove(); }
-        taskQueue.add(task);
+        if (task != null) {
+            if (taskQueue.size() == 10) {
+                taskQueue.remove();
+            }
+            taskQueue.add(task);
+        }
     }
 
     @Override

@@ -1,18 +1,19 @@
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private HashMap<Integer, SubTask> subTasksEpic = new HashMap<>() ;
+    private Map<Integer, SubTask> subTasksEpic = new HashMap<>() ;
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
     }
 
-    public HashMap<Integer, SubTask> getSubTasksEpic() {
+    public Map<Integer, SubTask> getSubTasksEpic() {
         return subTasksEpic;
     }
 
-    public void setSubTasksEpic(HashMap<Integer, SubTask> subTasksEpic) {
+    public void setSubTasksEpic(Map<Integer, SubTask> subTasksEpic) {
         if (subTasksEpic == null) {
             this.subTasksEpic.clear();
         } else {

@@ -1,15 +1,15 @@
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     List<Task> getHistory();
-    HashMap<Integer, Task> getTasks();
+    Map<Integer, Task> getTasks();
 
-    HashMap<Integer, SubTask> getSubTasks();
+    Map<Integer, SubTask> getSubTasks();
 
-    HashMap<Integer, Epic> getEpics();
+    Map<Integer, Epic> getEpics();
 
-    HashMap<Integer, SubTask> getSubTasksByEpicId(int id);
+    Map<Integer, SubTask> getSubTasksByEpicId(int id);
 
     void printTasks();
 

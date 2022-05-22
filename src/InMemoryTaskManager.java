@@ -1,10 +1,11 @@
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, SubTask> subTasks;
-    private final HashMap<Integer, Epic> epics;
+    private final Map<Integer, Task> tasks;
+    private final Map<Integer, SubTask> subTasks;
+    private final Map<Integer, Epic> epics;
     private final HistoryManager historyManager;
     private int id;
 
@@ -23,17 +24,17 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
     @Override
-    public HashMap<Integer, Task> getTasks() { return new HashMap<>(tasks); }
+    public Map<Integer, Task> getTasks() { return new HashMap<>(tasks); }
     @Override
-    public HashMap<Integer, SubTask> getSubTasks() {
+    public Map<Integer, SubTask> getSubTasks() {
         return new HashMap<>(subTasks);
     }
     @Override
-    public HashMap<Integer, Epic> getEpics() {
+    public Map<Integer, Epic> getEpics() {
         return new HashMap<>(epics);
     }
     @Override
-    public HashMap<Integer, SubTask> getSubTasksByEpicId(int id) {
+    public Map<Integer, SubTask> getSubTasksByEpicId(int id) {
         if (epics.get(id) == null) {
             return null;
         } else {
