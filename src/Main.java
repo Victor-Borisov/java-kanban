@@ -28,8 +28,6 @@ public class Main {
 
         epic = new Epic("Получение гражданства", "Получить гражданство");
         manager.createEpic(epic);
-        subTask = new SubTask("Получение гражданства", "Получить гражданство", Status.NEW, epic.getId());
-        manager.createSubTask(subTask);
 
         /*Print tasks*/
         System.out.println(manager.getTask(1));
@@ -51,7 +49,11 @@ public class Main {
         System.out.println(manager.getSubTask(5));
         System.out.println(manager.getSubTask(6));
         System.out.println(manager.getEpic(7));
-        System.out.println(manager.getSubTask(8));
+        System.out.println(manager.getTask(2));
+        System.out.println(manager.getSubTask(4));
+        for (Task taskInHistory : manager.getHistory()) {
+            System.out.println("Task in history (check unique): " + taskInHistory);
+        }
         /*Change statuses*/
         task = manager.getTask(1);
         task.setStatus(Status.IN_PROGRESS);
