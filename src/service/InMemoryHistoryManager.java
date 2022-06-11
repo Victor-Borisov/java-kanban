@@ -8,17 +8,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-     static class Node {
+     private static class Node {
         Task task;
         Node prev;
         Node next;
         public Node(Task task) {
             this.task = task;
+            this.prev = null;
+            this.next = null;
         }
     }
     private Node head;
     private Node tail;
-    private HashMap<Integer, Node> queueMap = new HashMap<>();
+    private final HashMap<Integer, Node> queueMap = new HashMap<>();
 
     private void linkLast(Task task) {
         final Node newNode = new Node(task);
@@ -33,14 +35,24 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
     private void removeNode(Node node) {
         if (node != null) {
-            if (node == head) {
-                head = node.next;
-                tail = node.next;
-            } else if (node == tail) {
-                tail = node.prev;
+            if (node == head) {/*delete head*/
+                if (head.next == null) {/*head is tail*/
+                    head = null;
+                    tail = null;
+                    node = null;
+                } else {
+                    head = head.next;
+                    head.prev = null;
+                    node = null;
+                }
+            } else if (node == tail) {/*delete tail*/
+                tail = tail.prev;
                 tail.next = null;
-            } else {
+                node = null;
+            } else {/*delete middle node*/
                 node.prev.next = node.next;
+                node.next.prev = node.prev;
+                node = null;
             }
         }
     }
@@ -61,10 +73,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         final ArrayList<Task> tasks = new ArrayList<>();
-        Node currentNode = head;
+        Node currentNode = tail;
         while (currentNode != null) {
             tasks.add(currentNode.task);
-            currentNode = currentNode.next;
+            currentNode = currentNode.prev;
         }
         return tasks;
     }
