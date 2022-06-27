@@ -37,6 +37,7 @@ public class Task {
     public void setId(int id) {
         this.id = id;
     }
+    public Type getType() { return Type.TASK; }
     @Override
     public String toString() {
         return "Task{" +
