@@ -7,10 +7,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
 
 import static model.Type.SUBTASK;
 
@@ -50,6 +49,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(HistoryManager historyManager, File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);
         Map<Integer, Task> allTasks = new HashMap<>();
+        int maxLoadedId = 0;
 
         List<String> list = null;
         try {
@@ -70,6 +70,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             Task task = taskFromString(item);
             if (task != null) {
+                if (task.getId() > maxLoadedId) {
+                    maxLoadedId = task.getId();
+                }
                 allTasks.put(task.getId(), task);
                 switch (task.getType()) {
                     case TASK:
@@ -98,7 +101,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 manager.historyManager.add(allTasks.get(id));
             }
         }
-
+        manager.id = maxLoadedId;
         return manager;
     }
     @Override
@@ -252,7 +255,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             super();
         }
     }
-    public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
         Path testFile = Files.createTempFile("tmstorage", ".csv");
         testFile.toFile().deleteOnExit();
         FileBackedTaskManager manager = new FileBackedTaskManager(Managers.getDefaultHistory(), testFile.toFile());
@@ -262,7 +265,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         SubTask subTask;
         Epic epic;
         List<Task> history;
-        /*Create tasks*/
+
         manager.createTask(new Task("Покупка билетов", "Купить билеты", Status.NEW));
         manager.createTask(new Task("Бронирование жилья", "Арендовать квартиру", Status.NEW));
 
@@ -278,7 +281,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         epic = new Epic("Получение гражданства", "Получить гражданство");
         manager.createEpic(epic);
 
-        /*Print tasks*/
         System.out.println(manager.getTask(1));
         System.out.println(manager.getTask(2));
         System.out.println(manager.getEpic(3));
@@ -298,5 +300,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         for (int i = 0; i < history.size(); i++) {
             System.out.println("History from file: " + history.get(i));
         }
-    }
+    }*/
 }

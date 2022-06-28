@@ -2,7 +2,6 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import service.Managers;
-import model.Status;
 import service.TaskManager;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class Main {
         Epic epic;
         List<Task> history;
         /*Create tasks*/
-        manager.createTask(new Task("Покупка билетов", "Купить билеты", Status.NEW));
+        /*manager.createTask(new Task("Покупка билетов", "Купить билеты", Status.NEW));
         manager.createTask(new Task("Бронирование жилья", "Арендовать квартиру", Status.NEW));
 
         epic = new Epic("Релокация", "Переехать жить и работать в другую страну");
@@ -30,10 +29,10 @@ public class Main {
         manager.createSubTask(subTask);
 
         epic = new Epic("Получение гражданства", "Получить гражданство");
-        manager.createEpic(epic);
+        manager.createEpic(epic);*/
 
         /*Print tasks*/
-        System.out.println(manager.getTask(1));
+        /*System.out.println(manager.getTask(1));
         history = manager.getHistory();
         for (int i = 0; i < history.size(); i++) {
             System.out.println("History after getTask 1: " + history.get(i));
@@ -57,21 +56,21 @@ public class Main {
         history = manager.getHistory();
         for (int i = 0; i < history.size(); i++) {
             System.out.println("History (check unique 2, 4): " + history.get(i));
-        }
+        }*/
         /*Change statuses*/
-        task = manager.getTask(1);
+        /*task = manager.getTask(1);
         task.setStatus(Status.IN_PROGRESS);
         manager.updateTask(task);
         subTask = manager.getSubTask(4);
         subTask.setStatus(Status.IN_PROGRESS);
-        manager.updateSubTask(subTask);
+        manager.updateSubTask(subTask);*/
         /*Check status changed */
-        System.out.println("---Some statuses were changed");
+        /*System.out.println("---Some statuses were changed");
         System.out.println(manager.getTask(1));
         System.out.println(manager.getSubTask(4));
-        System.out.println(manager.getEpic(3));
+        System.out.println(manager.getEpic(3));*/
         /*Delete task*/
-        history = manager.getHistory();
+        /*history = manager.getHistory();
         for (int i = 0; i < history.size(); i++) {
             System.out.println("History (check before delete): " + history.get(i));
         }
@@ -79,17 +78,17 @@ public class Main {
         history = manager.getHistory();
         for (int i = 0; i < history.size(); i++) {
             System.out.println("History (check after delete, inner node 2): " + history.get(i));
-        }
+        }*/
         /*Delete epic*/
-        manager.deleteEpic(3);
+        /*manager.deleteEpic(3);
         history = manager.getHistory();
         for (int i = 0; i < history.size(); i++) {
             System.out.println("History (check after delete, terminal node): " + history.get(i));
-        }
+        }*/
         /*Print all*/
-        System.out.println("---Some items were deleted");
+        /*System.out.println("---Some items were deleted");
         manager.printTasks();
         manager.printEpics();
-        manager.printSubTasks();
+        manager.printSubTasks();*/
     }
 }
