@@ -50,6 +50,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(HistoryManager historyManager, File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);
         Map<Integer, Task> allTasks = new HashMap<>();
+        int maxLoadedId = 0;
 
         List<String> list = null;
         try {
@@ -70,6 +71,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             Task task = taskFromString(item);
             if (task != null) {
+                if (task.getId() > maxLoadedId) {
+                    maxLoadedId = task.getId();
+                }
                 allTasks.put(task.getId(), task);
                 switch (task.getType()) {
                     case TASK:
@@ -98,7 +102,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 manager.historyManager.add(allTasks.get(id));
             }
         }
-
+        manager.id = maxLoadedId;
         return manager;
     }
     @Override
