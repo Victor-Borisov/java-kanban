@@ -2,6 +2,7 @@ import model.*;
 import org.junit.jupiter.api.Test;
 import service.TaskManager;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,17 +16,17 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected SubTask subTaskDONE;
 
     void beforeEachTest() {
-        task = new Task("Покупка билетов", "Купить билеты", Status.NEW);
+        task = new Task("Покупка билетов", "Купить билеты", Status.NEW, LocalDateTime.now(), 10);
         taskManager.createTask(task);
 
-        epic = new Epic("Релокация", "Переехать жить и работать в другую страну");
+        epic = new Epic("Релокация", "Переехать жить и работать в другую страну", LocalDateTime.now(), 10);
         taskManager.createEpic(epic);
 
-        subTaskNEW = new SubTask("Открытие счёта", "Открыть счёт в банке", Status.NEW, epic.getId());
+        subTaskNEW = new SubTask("Открытие счёта", "Открыть счёт в банке", Status.NEW, LocalDateTime.now(), 10, epic.getId());
         taskManager.createSubTask(subTaskNEW);
-        subTaskDONE = new SubTask("Устройство на работу", "Устроиться на работу в новой локации", Status.DONE, epic.getId());
+        subTaskDONE = new SubTask("Устройство на работу", "Устроиться на работу в новой локации", Status.DONE, LocalDateTime.now(), 10, epic.getId());
         taskManager.createSubTask(subTaskDONE);
-        subTaskIN_PROGRESS = new SubTask("Подготовка документов", "Подготовить все документы", Status.IN_PROGRESS, epic.getId());
+        subTaskIN_PROGRESS = new SubTask("Подготовка документов", "Подготовить все документы", Status.IN_PROGRESS, LocalDateTime.now(), 10, epic.getId());
         taskManager.createSubTask(subTaskIN_PROGRESS);
     }
 
@@ -66,7 +67,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(epic2, "getEpic(1000) returned an epic");
         assertEquals(Type.EPIC, epic1.getType(),  "epic1.getType() failed");
         assertTrue(epic1.equals(epic1),  "epic1.equals(epic1) failed");
-
+        assertEquals(epic1.getStartTime().plusMinutes(30), epic1.getEndTime(), "getEndTime() for epic failed");
+        assertEquals(10, epic1.getDuration(), "getDuration() failed");
     }
 
     @Test
@@ -76,7 +78,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(3, subTask1.getId(),  "getSubTask(3) failed");
         assertNull(subTask2, "getSubTask(1000) returned a subtask");
         assertEquals(Type.SUBTASK, subTask1.getType(),  "getType() failed");
-        assertEquals("SubTask{name='Открытие счёта', description='Открыть счёт в банке', id=3, status=NEW, epicId=2}", subTask1.toString(),  "toString() failed");
+        assertEquals("SubTask{name='Открытие счёта', description='Открыть счёт в банке', id=3, status=NEW,", subTask1.toString().substring(0, 84),  "toString() failed");
         assertTrue(subTask1.equals(subTask1),  "equals(subTask1) failed");
     }
 

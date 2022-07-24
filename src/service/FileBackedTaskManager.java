@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static model.Type.SUBTASK;
@@ -193,7 +194,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         return task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + ","
-                + task.getDescription() + "," + epicId;
+                + task.getDescription() + "," + task.getStartTime() + "," + task.getDuration() + "," + epicId;
     }
     private static Task taskFromString(String line) {
         Task task = null;
@@ -206,18 +207,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String name = values[2].trim();
             Status status = Status.valueOf(values[3].trim());
             String description = values[4].trim();
+            LocalDateTime startTime = LocalDateTime.parse(values[5]);
 
             switch (type) {
                 case SUBTASK:
-                    task = new SubTask(name, description, status, Integer.parseInt(values[5].trim()));
+                    task = new SubTask(name, description, status, startTime, Integer.parseInt(values[6].trim()), Integer.parseInt(values[7].trim()));
                     task.setId(id);
                     break;
                 case EPIC:
-                    task = new Epic(name, description);
+                    task = new Epic(name, description, startTime, Integer.parseInt(values[6].trim()));
                     task.setId(id);
                     break;
                 case TASK:
-                    task = new Task(name, description, status);
+                    task = new Task(name, description, status, startTime, Integer.parseInt(values[6].trim()));
                     task.setId(id);
                     break;
             }

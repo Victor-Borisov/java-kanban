@@ -1,26 +1,27 @@
 package model;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Epic extends Task {
     private Map<Integer, SubTask> subTasksEpic = new HashMap<>() ;
 
-    public Epic(String name, String description) {
-        super(name, description, Status.NEW);
+    public Epic(String name, String description, LocalDateTime startTime, int duration) {
+        super(name, description, Status.NEW, startTime, duration);
     }
 
     public Map<Integer, SubTask> getSubTasksEpic() {
         return subTasksEpic;
     }
-
-    public void setSubTasksEpic(Map<Integer, SubTask> subTasksEpic) {
-        if (subTasksEpic == null) {
-            this.subTasksEpic.clear();
-        } else {
-            this.subTasksEpic = subTasksEpic;
+    @Override
+    public LocalDateTime getEndTime() {
+        endTime = startTime;
+        for (SubTask subTask : subTasksEpic.values()) {
+            endTime = endTime.plusMinutes(subTask.getDuration());
         }
+        return endTime;
     }
     public Type getType() { return Type.EPIC; }
 
@@ -31,6 +32,8 @@ public class Epic extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
                 ", status=" + getStatus() +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
                 ", subTasksEpic=" + subTasksEpic +
                 '}';
     }

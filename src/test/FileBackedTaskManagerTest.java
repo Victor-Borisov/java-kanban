@@ -33,7 +33,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
         Task task1 = taskManager.getTask(1);
         TaskManager taskManagerLoaded = loadFromFile(Managers.getDefaultHistory(), testFile.toFile());
-        assertEquals(task1, taskManagerLoaded.getTask(1), "loadFromFile or save failed");
+        Task task2 = taskManagerLoaded.getTask(1);
+        assertEquals(task1, task2, "loadFromFile or save failed");
+        assertEquals(task1.getStartTime(), task2.getStartTime(), "getStartTime() after loading failed");
+        assertEquals(task1.getDuration(), task2.getDuration(), "getDuration() after loading failed");
+        assertEquals(task1.getEndTime(), task2.getEndTime(), "getEndTime() after loading failed");
 
         Epic epic1 = taskManager.getEpic(2);
         taskManager.deleteAllSubTasks();

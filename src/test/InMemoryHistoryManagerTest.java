@@ -8,6 +8,7 @@ import service.InMemoryHistoryManager;
 import service.Managers;
 import service.TaskManager;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,19 +28,20 @@ public class InMemoryHistoryManagerTest extends InMemoryHistoryManager {
         Epic epic;
         List<Task> history;
 
-        taskManager.createTask(new Task("Покупка билетов", "Купить билеты", Status.NEW));
-        taskManager.createTask(new Task("Бронирование жилья", "Арендовать квартиру", Status.NEW));
+        taskManager.createTask(new Task("Покупка билетов", "Купить билеты", Status.NEW, LocalDateTime.now(), 10));
+        taskManager.createTask(new Task("Бронирование жилья", "Арендовать квартиру", Status.NEW, LocalDateTime.now(), 10));
 
-        epic = new Epic("Релокация", "Переехать жить и работать в другую страну");
+        epic = new Epic("Релокация", "Переехать жить и работать в другую страну", LocalDateTime.now(), 10);
+
         taskManager.createEpic(epic);
-        subTask = new SubTask("Подготовка документов", "Подготовить все документы", Status.NEW, epic.getId());
+        subTask = new SubTask("Подготовка документов", "Подготовить все документы", Status.NEW, LocalDateTime.now(), 10, epic.getId());
         taskManager.createSubTask(subTask);
-        subTask = new SubTask("Устройство на работу", "Устроиться на работу в новой локации", Status.NEW, epic.getId());
+        subTask = new SubTask("Устройство на работу", "Устроиться на работу в новой локации", Status.NEW, LocalDateTime.now(), 10, epic.getId());
         taskManager.createSubTask(subTask);
-        subTask = new SubTask("Открытие счёта", "Открыть счёт в банке", Status.NEW, epic.getId());
+        subTask = new SubTask("Открытие счёта", "Открыть счёт в банке", Status.NEW, LocalDateTime.now(), 10, epic.getId());
         taskManager.createSubTask(subTask);
 
-        epic = new Epic("Получение гражданства", "Получить гражданство");
+        epic = new Epic("Получение гражданства", "Получить гражданство", LocalDateTime.now(), 10);
         taskManager.createEpic(epic);
 
         taskManager.getTask(1);

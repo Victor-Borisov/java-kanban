@@ -1,12 +1,13 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String name, String description, Enum status, int epicId) {
-        super(name, description, status);
+    public SubTask(String name, String description, Enum status, LocalDateTime startTime, int duration, int epicId) {
+        super(name, description, status, startTime, duration);
         this.epicId = epicId;
     }
 
@@ -23,6 +24,8 @@ public class SubTask extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
                 ", status=" + getStatus() +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
                 ", epicId=" + epicId +
                 '}';
     }
