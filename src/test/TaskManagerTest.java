@@ -3,7 +3,10 @@ import org.junit.jupiter.api.Test;
 import service.TaskManager;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,17 +19,17 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected SubTask subTaskDONE;
 
     void beforeEachTest() {
-        task = new Task("Покупка билетов", "Купить билеты", Status.NEW, LocalDateTime.now(), 10);
+        task = new Task("Покупка билетов", "Купить билеты", Status.NEW, LocalDateTime.of(2022, 7, 24, 10, 0), 10);
         taskManager.createTask(task);
 
-        epic = new Epic("Релокация", "Переехать жить и работать в другую страну", LocalDateTime.now(), 10);
+        epic = new Epic("Релокация", "Переехать жить и работать в другую страну", LocalDateTime.of(2022, 7, 24, 10, 15), 10);
         taskManager.createEpic(epic);
 
-        subTaskNEW = new SubTask("Открытие счёта", "Открыть счёт в банке", Status.NEW, LocalDateTime.now(), 10, epic.getId());
+        subTaskNEW = new SubTask("Открытие счёта", "Открыть счёт в банке", Status.NEW, LocalDateTime.of(2022, 7, 24, 10, 45), 10, epic.getId());
         taskManager.createSubTask(subTaskNEW);
-        subTaskDONE = new SubTask("Устройство на работу", "Устроиться на работу в новой локации", Status.DONE, LocalDateTime.now(), 10, epic.getId());
+        subTaskDONE = new SubTask("Устройство на работу", "Устроиться на работу в новой локации", Status.DONE, LocalDateTime.of(2022, 7, 24, 10, 30), 10, epic.getId());
         taskManager.createSubTask(subTaskDONE);
-        subTaskIN_PROGRESS = new SubTask("Подготовка документов", "Подготовить все документы", Status.IN_PROGRESS, LocalDateTime.now(), 10, epic.getId());
+        subTaskIN_PROGRESS = new SubTask("Подготовка документов", "Подготовить все документы", Status.IN_PROGRESS, LocalDateTime.of(2022, 7, 24, 10, 15), 10, epic.getId());
         taskManager.createSubTask(subTaskIN_PROGRESS);
     }
 
@@ -164,5 +167,30 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTasks();
         taskManager.deleteAllSubTasks();
         taskManager.deleteAllEpics();
+        Map<Integer, Task> tasksEmpty = new HashMap<>();
+        assertEquals(tasksEmpty, taskManager.getTasks(), "deleteAllTasks() failed");
+        assertEquals(tasksEmpty, taskManager.getSubTasks(), "deleteAllSubTasks() failed");
+        assertEquals(tasksEmpty, taskManager.getEpics(), "deleteAllEpics() failed");
     }
+    @Test
+    public void shouldReturnPrioritizedTasks() {
+        Task taskNext, taskPrev;
+        TreeSet<Task> sortedTasks = taskManager.getPrioritizedTasks();
+        if (sortedTasks.size() > 0) {
+            Iterator taskIterator = sortedTasks.iterator();
+            taskPrev = sortedTasks.first();
+            while (taskIterator.hasNext()) {
+                taskNext = (Task) taskIterator.next();
+                if (!taskNext.equals(taskPrev)) {
+                    assertTrue(taskNext.getStartTime().isAfter(taskPrev.getStartTime()) || taskNext.getStartTime().isEqual(taskPrev.getStartTime()), "getPrioritizedTasks() failed");
+                }
+                taskPrev = taskNext;
+            }
+        }
+    }
+
+     @Test
+    public void shouldThrowExceptionWhenFindIntersectionBetweenTasks() {
+    }
+
 }
