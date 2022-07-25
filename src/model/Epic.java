@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Epic extends Task {
+    protected LocalDateTime endTime;
     private Map<Integer, SubTask> subTasksEpic = new HashMap<>() ;
 
     public Epic(String name, String description, LocalDateTime startTime, int duration) {
@@ -17,11 +18,10 @@ public class Epic extends Task {
     }
     @Override
     public LocalDateTime getEndTime() {
-        endTime = startTime;
-        for (SubTask subTask : subTasksEpic.values()) {
-            endTime = endTime.plusMinutes(subTask.getDuration());
-        }
         return endTime;
+    }
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
     public Type getType() { return Type.EPIC; }
 

@@ -16,7 +16,7 @@ import static model.Type.SUBTASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
-    private static final String HEADER_LINE = "id,type,name,status,description,epic";
+    private static final String HEADER_LINE = "id,type,name,status,description,startTime,duration,epic";
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
         this.file = file;
@@ -78,6 +78,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (task.getType()) {
                     case TASK:
                         manager.tasks.put(task.getId(), task);
+                        manager.prioritizedTasks.add(task);
                         break;
                     case EPIC:
                         Epic epic = (Epic) task;
@@ -87,6 +88,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         SubTask subTask = (SubTask) task;
                         Epic epicOfSubTask = manager.epics.get(subTask.getEpicId());
                         manager.subTasks.put(subTask.getId(), subTask);
+                        manager.prioritizedTasks.add(subTask);
                         epicOfSubTask.getSubTasksEpic().put(subTask.getId(), subTask);
                         manager.updateStatusEpic(epicOfSubTask);
                         break;
@@ -207,7 +209,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String name = values[2].trim();
             Status status = Status.valueOf(values[3].trim());
             String description = values[4].trim();
-            LocalDateTime startTime = LocalDateTime.parse(values[5]);
+            LocalDateTime startTime;
+            if (values[5] == "null") {
+                startTime = null;
+            } else {
+                startTime = LocalDateTime.parse(values[5]);
+            }
 
             switch (type) {
                 case SUBTASK:

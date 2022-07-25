@@ -30,9 +30,12 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     void loadFromFileTest() {
+        TaskManager taskManagerLoaded = loadFromFile(Managers.getDefaultHistory(), testFile.toFile());
+        assertEquals(taskManager.getTasks(), taskManagerLoaded.getTasks(), "Map of tasks after loading is corrupted");
+        assertEquals(taskManager.getEpics(), taskManagerLoaded.getEpics(), "Map of epics after loading is corrupted");
+        assertEquals(taskManager.getSubTasks(), taskManagerLoaded.getSubTasks(), "Map of subTasks after loading is corrupted");
 
         Task task1 = taskManager.getTask(1);
-        TaskManager taskManagerLoaded = loadFromFile(Managers.getDefaultHistory(), testFile.toFile());
         Task task2 = taskManagerLoaded.getTask(1);
         assertEquals(task1, task2, "loadFromFile or save failed");
         assertEquals(task1.getStartTime(), task2.getStartTime(), "getStartTime() after loading failed");

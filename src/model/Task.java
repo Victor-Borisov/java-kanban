@@ -7,18 +7,16 @@ public class Task {
     private String name;
     private String description;
     private int id;
-    private Enum status;
+    private Status status;
     protected LocalDateTime startTime;
     protected int duration;
-    protected LocalDateTime endTime;
 
-    public Task(String name, String description, Enum status, LocalDateTime startTime, int duration) {
+    public Task(String name, String description, Status status, LocalDateTime startTime, int duration) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.startTime = startTime;
         this.duration = duration;
-        this.endTime = startTime.plusMinutes(duration) ;
     }
 
     public String getName() {
@@ -40,7 +38,7 @@ public class Task {
         return status;
     }
 
-    public void setStatus(Enum status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -59,7 +57,8 @@ public class Task {
         return duration;
     }
     public LocalDateTime getEndTime() {
-        return endTime;
+        if (startTime == null) return null;
+        return startTime.plusMinutes(duration);
     }
     @Override
     public String toString() {

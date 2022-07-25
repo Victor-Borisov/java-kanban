@@ -59,4 +59,5 @@ public interface TaskManager {
     void updateStatusEpic(Epic epic);
 
     TreeSet<Task> getPrioritizedTasks();
+    public void setEpicEndTime(Epic epic);
 }

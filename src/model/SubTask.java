@@ -6,7 +6,7 @@ import java.util.Objects;
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String name, String description, Enum status, LocalDateTime startTime, int duration, int epicId) {
+    public SubTask(String name, String description, Status status, LocalDateTime startTime, int duration, int epicId) {
         super(name, description, status, startTime, duration);
         this.epicId = epicId;
     }
