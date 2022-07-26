@@ -1,4 +1,4 @@
-import exception.taskOverlapException;
+import exception.TaskOverlapException;
 import model.*;
 import org.junit.jupiter.api.Test;
 import service.TaskManager;
@@ -71,8 +71,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(epic2, "getEpic(1000) returned an epic");
         assertEquals(Type.EPIC, epic1.getType(),  "epic1.getType() failed");
         assertTrue(epic1.equals(epic1),  "epic1.equals(epic1) failed");
-        assertEquals(epic1.getStartTime().plusMinutes(30), epic1.getEndTime(), "getEndTime() for epic failed");
-        assertEquals(10, epic1.getDuration(), "getDuration() failed");
+        assertEquals(LocalDateTime.of(2022, 7, 24, 10, 55), epic1.getEndTime(), "getEndTime() for epic failed");
+        assertEquals(40, epic1.getDuration(), "getDuration() failed");
     }
 
     @Test
@@ -105,11 +105,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
         int epicId = subTask1.getEpicId();
         assertEquals(2, epicId, "createSubTask(subTaskNEW) failed in part of epic");
         SubTask subTaskOverlapped1 = new SubTask("SubTask overlapped", "To check overlapping", Status.IN_PROGRESS, LocalDateTime.of(2022, 7, 24, 10, 20), 10, epic.getId());
-        assertThrows(taskOverlapException.class,
+        assertThrows(TaskOverlapException.class,
             () -> taskManager.createSubTask(subTaskOverlapped1),
             "StartTime is between lifecycle of existed subTask.");
         SubTask subTaskOverlapped2 = new SubTask("SubTask overlapped", "To check overlapping", Status.IN_PROGRESS, LocalDateTime.of(2022, 7, 24, 10, 10), 10, epic.getId());
-        assertThrows(taskOverlapException.class,
+        assertThrows(TaskOverlapException.class,
                 () -> taskManager.createSubTask(subTaskOverlapped2),
                 "EndTime is between lifecycle of existed subTask.");
     }

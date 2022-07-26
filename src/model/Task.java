@@ -34,7 +34,7 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
-    public Enum getStatus() {
+    public Status getStatus() {
         return status;
     }
 

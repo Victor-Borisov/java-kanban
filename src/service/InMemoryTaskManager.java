@@ -1,11 +1,12 @@
 package service;
 
-import exception.taskOverlapException;
+import exception.TaskOverlapException;
 import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -22,24 +23,27 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks = new HashMap<>();
         epics = new HashMap<>();
         this.historyManager = historyManager;
-        prioritizedTasks = new TreeSet<>(Comparator.<Task, LocalDateTime>comparing(
-            task -> task.getStartTime(),
+        prioritizedTasks = new TreeSet<>(Comparator.comparing(
+            Task::getStartTime,
             Comparator.nullsLast(Comparator.naturalOrder())
         )
         .thenComparingInt(Task::getId));
     }
 
-    protected void checkOverlaping(Task task) throws taskOverlapException {
+    protected void checkOverlaping(Task task) {
         for (Task taskPriority : prioritizedTasks) {
+            if (taskPriority.getStartTime() == null || task.getStartTime() == null) {
+                break;
+            }
             if (task.getId() == taskPriority.getId()) {
                 continue;
             }
-            if (//taskPriority.endTime between existed startTime and endTime (but it can be equal startTime)
-                taskPriority.getEndTime().isBefore(task.getEndTime()) && !taskPriority.getEndTime().isBefore(task.getStartTime()) ||
-                //taskPriority.startTime between existed startTime and endTime (but it can be equal endTime)
-                !taskPriority.getStartTime().isAfter(task.getEndTime()) && taskPriority.getStartTime().isAfter(task.getStartTime())
+            if (!(
+                !taskPriority.getEndTime().isAfter(task.getStartTime()) ||
+                !task.getEndTime().isAfter(taskPriority.getStartTime())
+                )
             ) {
-                throw new taskOverlapException("Task is overlapped with existed one");
+                throw new TaskOverlapException("Task is overlapped with existed one");
             }
         }
     }
@@ -289,14 +293,27 @@ public class InMemoryTaskManager implements TaskManager {
     }
     @Override
     public void setEpicEndTime(Epic epic) {
-        if (epic.getStartTime() == null) {
-            epic.setEndTime(null);
-        } else {
-            LocalDateTime endTime = epic.getStartTime();
-            for (SubTask subTask : epic.getSubTasksEpic().values()) {
-                endTime = endTime.plusMinutes(subTask.getDuration());
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        for (SubTask subTask : epic.getSubTasksEpic().values()) {
+            if (startTime == null && subTask.getStartTime() != null) {
+                startTime = subTask.getStartTime();
+            } else {
+                if (subTask.getStartTime().isBefore(startTime)) {
+                    startTime = subTask.getStartTime();
+                }
             }
+            if (endTime == null && subTask.getEndTime() != null) {
+                endTime = subTask.getEndTime();
+            } else {
+                if (subTask.getEndTime().isAfter(endTime)) {
+                    endTime = subTask.getEndTime();
+                }
+            }
+            epic.setStartTime(startTime);
             epic.setEndTime(endTime);
+            int duration = (int) Duration.between(startTime, endTime).toMinutes();
+            epic.setDuration(duration);
         }
     }
 
