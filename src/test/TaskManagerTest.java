@@ -72,7 +72,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Type.EPIC, epic1.getType(),  "epic1.getType() failed");
         assertTrue(epic1.equals(epic1),  "epic1.equals(epic1) failed");
         assertEquals(LocalDateTime.of(2022, 7, 24, 10, 55), epic1.getEndTime(), "getEndTime() for epic failed");
-        assertEquals(40, epic1.getDuration(), "getDuration() failed");
+        assertEquals(30, epic1.getDuration(), "getDuration() failed");
     }
 
     @Test

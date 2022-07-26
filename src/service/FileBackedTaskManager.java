@@ -210,7 +210,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             Status status = Status.valueOf(values[3].trim());
             String description = values[4].trim();
             LocalDateTime startTime;
-            if (values[5] == "null") {
+            if (values[5].equals("null")) {
                 startTime = null;
             } else {
                 startTime = LocalDateTime.parse(values[5]);

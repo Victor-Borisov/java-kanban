@@ -6,7 +6,6 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -295,26 +294,29 @@ public class InMemoryTaskManager implements TaskManager {
     public void setEpicEndTime(Epic epic) {
         LocalDateTime startTime = null;
         LocalDateTime endTime = null;
+        int duration = 0;
         for (SubTask subTask : epic.getSubTasksEpic().values()) {
-            if (startTime == null && subTask.getStartTime() != null) {
+            if (subTask.getStartTime() == null || subTask.getEndTime() == null) {
+                continue;
+            }
+            if (startTime == null) {
                 startTime = subTask.getStartTime();
             } else {
                 if (subTask.getStartTime().isBefore(startTime)) {
                     startTime = subTask.getStartTime();
                 }
             }
-            if (endTime == null && subTask.getEndTime() != null) {
+            if (endTime == null) {
                 endTime = subTask.getEndTime();
             } else {
                 if (subTask.getEndTime().isAfter(endTime)) {
                     endTime = subTask.getEndTime();
                 }
             }
-            epic.setStartTime(startTime);
-            epic.setEndTime(endTime);
-            int duration = (int) Duration.between(startTime, endTime).toMinutes();
-            epic.setDuration(duration);
+            duration += subTask.getDuration();
         }
+        epic.setStartTime(startTime);
+        epic.setEndTime(endTime);
+        epic.setDuration(duration);
     }
-
 }
