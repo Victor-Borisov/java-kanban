@@ -9,6 +9,10 @@ import model.Task;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class HTTPTaskManager extends FileBackedTaskManager {
     private String url;
@@ -28,7 +32,7 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         return kvTaskClient;
     }
     @Override
-    public void save() {
+    protected void save() {
 
         String jsonTasks = gson.toJson(new ArrayList<>(super.getTasks().values()));
         kvTaskClient.put("tasks", jsonTasks);
@@ -39,23 +43,21 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         String jsonSubTasks = gson.toJson(new ArrayList<>(super.getSubTasks().values()));
         kvTaskClient.put("subtasks", jsonSubTasks);
 
-        String jsonHistory = gson.toJson(new ArrayList<>(super.getHistory()));
+        String jsonHistory = gson.toJson(getHistory().stream().map(Task::getId).collect(Collectors.toList()));
         kvTaskClient.put("history", jsonHistory);
     }
 
-    public HTTPTaskManager loadFromServer(HistoryManager historyManager, KVTaskClient kvTaskClient) {
-        HTTPTaskManager manager = new HTTPTaskManager(url, historyManager, null, kvTaskClient);
-        int maxLoadedId = 0;
+    public void loadFromServer(HistoryManager historyManager) {
+        deleteAllTasks();
+        deleteAllEpics();
+        deleteAllSubTasks();
 
         String jsonTasks = this.kvTaskClient.load("tasks");
         if (!jsonTasks.isEmpty()) {
             ArrayList<Task> tasks = gson.fromJson(jsonTasks, new TypeToken<ArrayList<Task>>() {
             }.getType());
             for (Task task : tasks) {
-                if (task.getId() > maxLoadedId) {
-                    maxLoadedId = task.getId();
-                }
-                manager.createTask(task);
+                createTask(task);
             }
         }
 
@@ -64,10 +66,7 @@ public class HTTPTaskManager extends FileBackedTaskManager {
             ArrayList<Epic> epics = gson.fromJson(jsonEpics, new TypeToken<ArrayList<Epic>>() {
             }.getType());
             for (Epic epic : epics) {
-                if (epic.getId() > maxLoadedId) {
-                    maxLoadedId = epic.getId();
-                }
-                manager.createEpic(epic);
+                createEpic(epic);
             }
         }
 
@@ -76,24 +75,30 @@ public class HTTPTaskManager extends FileBackedTaskManager {
             ArrayList<SubTask> subtasks = gson.fromJson(jsonSubTasks, new TypeToken<ArrayList<SubTask>>() {
             }.getType());
             for (SubTask subtask : subtasks) {
-                if (subtask.getId() > maxLoadedId) {
-                    maxLoadedId = subtask.getId();
-                }
-                manager.createSubTask(subtask);
+                createSubTask(subtask);
             }
         }
 
-        manager.id = maxLoadedId;
+        id = getMaxId();
 
         String jsonHistory = this.kvTaskClient.load("history");
         if (!jsonHistory.isEmpty()) {
-            ArrayList<Task> taskHistory = gson.fromJson(jsonHistory, new TypeToken<ArrayList<Task>>() {
+            ArrayList<Integer> taskHistoryIds = gson.fromJson(jsonHistory, new TypeToken<ArrayList<Task>>() {
             }.getType());
-            for (Task task : taskHistory) {
-                manager.historyManager.add(task);
+            for (Integer id : taskHistoryIds) {
+                if (getTasks().containsKey(id)) { historyManager.add(getTask(id)); }
+                if (getEpics().containsKey(id)) { historyManager.add(getEpic(id)); }
+                if (getTasks().containsKey(id)) { historyManager.add(getTask(id)); }
             }
         }
 
-        return manager;
     }
+
+    private Integer getMaxId() {
+        Collection<Integer> merged = Stream.of(tasks.keySet(), epics.keySet(), subTasks.keySet())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        return Collections.max(merged);
+    }
+
 }

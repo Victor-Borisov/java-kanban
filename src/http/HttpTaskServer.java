@@ -27,14 +27,16 @@ public class HttpTaskServer {
     private TaskManager taskManager;
     private HttpServer httpServer;
 
-    public HttpTaskServer(TaskManager taskManager) {
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
+
         this.taskManager = taskManager;
+        createHTTPServer();
     }
 
-    private final String TASK = "task";
-    private final String EPIC = "epic";
-    private final String SUBTASK = "subtask";
-    private final String HISTORY = "history";
+    private static String TASK = "task";
+    private static String EPIC = "epic";
+    private static String SUBTASK = "subtask";
+    private static String HISTORY = "history";
 
     private final int PORT = 8080;
     private final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
@@ -48,21 +50,20 @@ public class HttpTaskServer {
         return gson;
     }
 
-    public void createHTTPServer() throws IOException {
+    private void createHTTPServer() throws IOException {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT), 0);
-
         httpServer.createContext("/tasks", new TaskHandler());
-
-        httpServer.start();
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
-
+    public void startHttpServer() {
+        httpServer.start();
+    }
     public void stopHttpServer() {
         httpServer.stop(1);
     }
 
-    class TaskHandler implements HttpHandler {
+    private class TaskHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange h) throws IOException {
             String methodRequest = h.getRequestMethod();
@@ -70,7 +71,7 @@ public class HttpTaskServer {
             String path = requestURI.getPath();
             String[] splitPath = path.split("/");
 
-            if (splitPath.length == 2) {
+            if (splitPath.length == 2 && methodRequest.equals("GET")) {
                 handleGetPrioritizedTasks(h);
             }
 
@@ -111,7 +112,7 @@ public class HttpTaskServer {
                     }
                     break;
                 default:
-                    outputStreamWrite(h, "Неизвестный HTTP запрос", 404);
+                    outputStreamWrite(h, "Неизвестный HTTP запрос", 405);
             }
         }
 
@@ -143,7 +144,8 @@ public class HttpTaskServer {
         public void handlePostAddUpdateTask(HttpExchange h) throws IOException {
             String body = readText(h);
             if (body.isEmpty()) {
-                outputStreamWrite(h, "Ничего не передано.", 404);
+                outputStreamWrite(h, "Ничего не передано.", 400);
+                return;
             }
             Task task = gson.fromJson(body, Task.class);
             if (h.getRequestURI().getQuery() == null) {
@@ -163,7 +165,8 @@ public class HttpTaskServer {
         public void handlePostAddUpdateEpic(HttpExchange h) throws IOException {
             String body = readText(h);
             if (body.isEmpty()) {
-                outputStreamWrite(h, "Ничего не передано.", 404);
+                outputStreamWrite(h, "Ничего не передано.", 400);
+                return;
             }
             Epic epic = gson.fromJson(body, Epic.class);
             if (h.getRequestURI().getQuery() == null) {
@@ -183,7 +186,8 @@ public class HttpTaskServer {
         public void handlePostAddUpdateSubTask(HttpExchange h) throws IOException {
             String body = readText(h);
             if (body.isEmpty()) {
-                outputStreamWrite(h, "Ничего не передано.", 404);
+                outputStreamWrite(h, "Ничего не передано.", 400);
+                return;
             }
             SubTask subTask = gson.fromJson(body, SubTask.class);
             if (h.getRequestURI().getQuery() == null) {
@@ -326,7 +330,7 @@ public class HttpTaskServer {
         }
     }
 
-    public static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+    private static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
         private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy(HH:mm)");
 
         @Override

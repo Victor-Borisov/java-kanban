@@ -47,7 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public int getId() {
+    public Integer getId() {
         return ++id;
     }
     @Override

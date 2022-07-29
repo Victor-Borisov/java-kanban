@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,7 +43,7 @@ public class HTTPTaskManagerTest {
         kvServer.start();
         httpTaskManager = (HTTPTaskManager) Managers.getDefault(Managers.getDefaultHistory());
         httpTaskServer = new HttpTaskServer(httpTaskManager);
-        httpTaskServer.createHTTPServer();
+        httpTaskServer.startHttpServer();
 
         task = new Task("Покупка билетов", "Купить билеты", Status.NEW, LocalDateTime.of(2022, 7, 24, 10, 0), 10);
         httpTaskManager.createTask(task);
@@ -217,7 +218,8 @@ public class HTTPTaskManagerTest {
     }
     @Test
     void loadFromFileTest() {
-        HTTPTaskManager taskManagerLoaded = httpTaskManager.loadFromServer(Managers.getDefaultHistory(), httpTaskManager.getKVTaskClient());
-        assertEquals(httpTaskManager.getTasks(), taskManagerLoaded.getTasks(), "Map of tasks after loading is corrupted");
+        Map<Integer, Task> tasks = httpTaskManager.getTasks();
+        httpTaskManager.loadFromServer(Managers.getDefaultHistory());
+        assertEquals(tasks, httpTaskManager.getTasks(), "Map of tasks after loading is corrupted");
     }
 }

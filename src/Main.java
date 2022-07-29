@@ -11,6 +11,8 @@ public class Main {
         System.out.println("Поехали!");
         KVServer kvServer = new KVServer();
         kvServer.start();
-        new HttpTaskServer(new HTTPTaskManager("http://localhost:8078", Managers.getDefaultHistory(), null, null)).createHTTPServer();
+        new HttpTaskServer(
+            new HTTPTaskManager("http://localhost:8078", Managers.getDefaultHistory(), null, null)
+        ).startHttpServer();
     }
 }
