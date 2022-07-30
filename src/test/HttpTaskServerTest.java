@@ -86,6 +86,57 @@ public class HttpTaskServerTest {
     }
 
     @Test
+    public void shouldReturn404() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:8080/tasks/task/?id=1000");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Accept", "application/json")
+                .version(HttpClient.Version.HTTP_1_1)
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode());
+    }
+
+    @Test
+    public void shouldAddTaskAndReturn200() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        Task taskNew = new Task("Added task", "New task", Status.NEW, LocalDateTime.of(2022, 7, 25, 10, 0), 10);
+        String taskJson = httpTaskServer.getGson().toJson(taskNew);
+        URI uri = URI.create("http://localhost:8080/tasks/task/");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Content-Type", "application/json")
+                .version(HttpClient.Version.HTTP_1_1)
+                .POST(HttpRequest.BodyPublishers.ofString(taskJson))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+        assertEquals("Создали новую задачу с Id 6", response.body());
+        assertEquals("Added task", httpTaskManager.getTask(6).getName());
+    }
+
+    @Test
+    public void shouldUpdateTaskAndReturn200() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        Task taskToUpdate = httpTaskManager.getTask(1);
+        taskToUpdate.setName("Updated task");
+        String taskJson = httpTaskServer.getGson().toJson(taskToUpdate);
+        URI uri = URI.create("http://localhost:8080/tasks/task/");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Content-Type", "application/json")
+                .version(HttpClient.Version.HTTP_1_1)
+                .POST(HttpRequest.BodyPublishers.ofString(taskJson))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+        assertEquals("Обновили задачу с Id 1", response.body());
+        assertEquals("Updated task", httpTaskManager.getTask(1).getName());
+    }
+
+    @Test
     public void shouldReturnTasksList() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         URI uri = URI.create("http://localhost:8080/tasks/task");

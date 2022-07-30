@@ -18,13 +18,7 @@ public interface TaskManager {
 
     Map<Integer, SubTask> getSubTasksByEpicId(int id);
 
-    void printTasks();
-
-    void printEpics();
-
-    void printSubTasks();
-
-    void printSubTasksByEpicId(int id);
+    HistoryManager getHistoryManager();
 
     void deleteAllTasks();
 

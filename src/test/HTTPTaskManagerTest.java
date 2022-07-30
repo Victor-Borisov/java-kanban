@@ -27,8 +27,7 @@ public class HttpTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         try {
             kvServer = new KVServer();
             kvServer.start();
-            httpTaskManager = new HttpTaskManager("http://localhost:8078", Managers.getDefaultHistory(), true );
-            taskManager = httpTaskManager;
+            taskManager = new HttpTaskManager("http://localhost:8078", Managers.getDefaultHistory(), false );
             httpTaskServer = new HttpTaskServer(taskManager);
             httpTaskServer.startHttpServer();
 
@@ -54,11 +53,11 @@ public class HttpTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Map<Integer, Epic> epics = taskManager.getEpics();
         Map<Integer, SubTask> subTasks = taskManager.getSubTasks();
         List<Task> history = taskManager.getHistory();
-        httpTaskManager.loadFromServer(Managers.getDefaultHistory());
-        assertEquals(tasks, taskManager.getTasks(), "Map of tasks after loading is corrupted");
-        assertEquals(epics, taskManager.getEpics(), "Map of epics after loading is corrupted");
-        assertEquals(subTasks, taskManager.getSubTasks(), "Map of subTasks after loading is corrupted");
-        assertEquals(history, taskManager.getHistory(), "List of history after loading is corrupted");
+        httpTaskManager = new HttpTaskManager("http://localhost:8078", Managers.getDefaultHistory(), true );
+        assertEquals(tasks, httpTaskManager.getTasks(), "Map of tasks after loading is corrupted");
+        assertEquals(epics, httpTaskManager.getEpics(), "Map of epics after loading is corrupted");
+        assertEquals(subTasks, httpTaskManager.getSubTasks(), "Map of subTasks after loading is corrupted");
+        assertEquals(history, httpTaskManager.getHistory(), "List of history after loading is corrupted");
     }
 
 }

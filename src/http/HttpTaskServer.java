@@ -33,10 +33,10 @@ public class HttpTaskServer {
         createHTTPServer();
     }
 
-    private static String TASK = "task";
-    private static String EPIC = "epic";
-    private static String SUBTASK = "subtask";
-    private static String HISTORY = "history";
+    private static final String TASK = "task";
+    private static final String EPIC = "epic";
+    private static final String SUBTASK = "subtask";
+    private static final String HISTORY = "history";
 
     private final int PORT = 8080;
     private final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
@@ -53,10 +53,10 @@ public class HttpTaskServer {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new TaskHandler());
-        System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
     public void startHttpServer() {
         httpServer.start();
+        System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
     public void stopHttpServer() {
         httpServer.stop(1);
@@ -147,7 +147,7 @@ public class HttpTaskServer {
                 return;
             }
             Task task = gson.fromJson(body, Task.class);
-            Integer idTask = setId(h);
+            Integer idTask = task.getId();
             if (idTask == null) {
                 taskManager.createTask(task);
                 outputStreamWrite(h, "Создали новую задачу с Id " + task.getId(), 200);
@@ -168,7 +168,7 @@ public class HttpTaskServer {
                 return;
             }
             Epic epic = gson.fromJson(body, Epic.class);
-            Integer idEpic = setId(h);
+            Integer idEpic = epic.getId();
             if (idEpic == null) {
                 taskManager.createEpic(epic);
                 outputStreamWrite(h, "Создали новый эпик с Id "+ epic.getId(), 200);
@@ -189,7 +189,7 @@ public class HttpTaskServer {
                 return;
             }
             SubTask subTask = gson.fromJson(body, SubTask.class);
-            Integer idSubTask = setId(h);
+            Integer idSubTask = subTask.getId();
             if (idSubTask == null) {
                 if (taskManager.getEpics().containsKey(subTask.getEpicId())) {
                     taskManager.createSubTask(subTask);

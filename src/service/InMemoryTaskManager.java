@@ -73,33 +73,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
     @Override
-    public void printTasks() {
-        if (tasks.size() == 0) System.out.println("Список задач пуст.");
-        for (Task name : tasks.values()) {
-            System.out.println("Task.name: " + name.getName());
-        }
-    }
-    @Override
-    public void printEpics() {
-        if (epics.size() == 0) System.out.println("Список эпиков пуст.");
-        for (Epic name : epics.values()) {
-            System.out.println("Epic.name: " + name.getName());
-        }
-    }
-    @Override
-    public void printSubTasks() {
-        if (subTasks.size() == 0) System.out.println("Список подзадач пуст.");
-        for (SubTask name : subTasks.values()) {
-            System.out.println("SubTask.name: " + name.getName());
-        }
-    }
-    @Override
-    public void printSubTasksByEpicId(int id) {
-        if (epics.get(id) == null) {
-            System.out.println("Список подзадач пуст.");
-        } else {
-            System.out.println(epics.get(id).getSubTasksEpic());
-        }
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
     @Override
     public void deleteAllTasks() {
