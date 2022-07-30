@@ -22,8 +22,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-
-    protected void save() {
+     protected void save() {
         try (FileWriter fw = new FileWriter(file, StandardCharsets.UTF_8);
             BufferedWriter writer = new BufferedWriter(fw)) {
             writer.write(HEADER_LINE);

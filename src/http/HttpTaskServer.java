@@ -43,7 +43,6 @@ public class HttpTaskServer {
     private Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .serializeNulls()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
 
     public Gson getGson() {
@@ -148,11 +147,11 @@ public class HttpTaskServer {
                 return;
             }
             Task task = gson.fromJson(body, Task.class);
-            if (h.getRequestURI().getQuery() == null) {
+            Integer idTask = setId(h);
+            if (idTask == null) {
                 taskManager.createTask(task);
                 outputStreamWrite(h, "Создали новую задачу с Id " + task.getId(), 200);
             } else {
-                int idTask = setId(h);
                 if (taskManager.getTasks().containsKey(idTask)) {
                     taskManager.updateTask(task);
                     outputStreamWrite(h, "Обновили задачу с Id "+ idTask, 200);
@@ -169,11 +168,11 @@ public class HttpTaskServer {
                 return;
             }
             Epic epic = gson.fromJson(body, Epic.class);
-            if (h.getRequestURI().getQuery() == null) {
+            Integer idEpic = setId(h);
+            if (idEpic == null) {
                 taskManager.createEpic(epic);
                 outputStreamWrite(h, "Создали новый эпик с Id "+ epic.getId(), 200);
             } else {
-                int idEpic = setId(h);
                 if (taskManager.getEpics().containsKey(idEpic)) {
                     taskManager.updateEpic(epic);
                     outputStreamWrite(h, "Обновили эпик с Id "+ idEpic, 200);
@@ -190,7 +189,8 @@ public class HttpTaskServer {
                 return;
             }
             SubTask subTask = gson.fromJson(body, SubTask.class);
-            if (h.getRequestURI().getQuery() == null) {
+            Integer idSubTask = setId(h);
+            if (idSubTask == null) {
                 if (taskManager.getEpics().containsKey(subTask.getEpicId())) {
                     taskManager.createSubTask(subTask);
                     outputStreamWrite(h, "Создали новую подзадачу с Id " + subTask.getId(), 200);
@@ -198,7 +198,6 @@ public class HttpTaskServer {
                     outputStreamWrite(h, "Эпика с Id " + subTask.getEpicId() + " нет в базе.", 404);
                 }
             } else {
-                int idSubTask = setId(h);
                 if (taskManager.getSubTasks().containsKey(idSubTask)) {
                     taskManager.updateSubTask(subTask);
                     outputStreamWrite(h, "Обновили подзадачу с Id "+ idSubTask, 200);
